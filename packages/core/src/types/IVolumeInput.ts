@@ -1,5 +1,6 @@
 import { VolumeActor } from './IActor';
 import BlendModes from '../enums/BlendModes';
+import { mat4 } from 'gl-matrix';
 
 /**
  * Volume input callback type, used to perform operations on the volume data
@@ -31,6 +32,8 @@ interface IVolumeInput {
   blendMode?: BlendModes;
   /** Slab thickness of the volume - by default it is 0.05*/
   slabThickness?: number;
+
+  matrix?: mat4;
 }
 
 export type { IVolumeInput, VolumeInputCallback };

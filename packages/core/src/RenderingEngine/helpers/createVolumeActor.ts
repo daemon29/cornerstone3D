@@ -8,6 +8,7 @@ import BlendModes from '../../enums/BlendModes';
 import { triggerEvent } from '../../utilities';
 import { Events } from '../../enums';
 import setDefaultVolumeVOI from './setDefaultVolumeVOI';
+import { mat4 } from 'gl-matrix';
 
 interface createVolumeActorInterface {
   volumeId: string;
@@ -34,7 +35,8 @@ async function createVolumeActor(
   element: HTMLDivElement,
   viewportId: string,
   suppressEvents = false,
-  useNativeDataType = false
+  useNativeDataType = false,
+  matrix?: mat4,
 ): Promise<VolumeActor> {
   const { volumeId, callback, blendMode } = props;
 
@@ -64,6 +66,10 @@ async function createVolumeActor(
 
   if (numberOfComponents === 3) {
     volumeActor.getProperty().setIndependentComponents(false);
+  }
+
+  if (matrix) {
+    volumeActor.setPosition(matrix[3],matrix[7], matrix[11]);
   }
 
   await setDefaultVolumeVOI(volumeActor, imageVolume, useNativeDataType);

@@ -1118,14 +1118,15 @@ abstract class BaseVolumeViewport extends Viewport implements IVolumeViewport {
 
     // One actor per volume
     for (let i = 0; i < volumeInputArray.length; i++) {
-      const { volumeId, actorUID, slabThickness } = volumeInputArray[i];
+      const { volumeId, actorUID, slabThickness, matrix } = volumeInputArray[i];
 
       const actor = await createVolumeActor(
         volumeInputArray[i],
         this.element,
         this.id,
         suppressEvents,
-        this.useNativeDataType
+        this.useNativeDataType,
+        matrix,
       );
 
       // We cannot use only volumeId since then we cannot have for instance more
@@ -1311,27 +1312,6 @@ abstract class BaseVolumeViewport extends Viewport implements IVolumeViewport {
     volumeInputArray: Array<IVolumeInput>,
     FrameOfReferenceUID: string
   ): Promise<boolean> {
-    const numVolumes = volumeInputArray.length;
-
-    // Check all other volumes exist and have the same FrameOfReference
-    for (let i = 1; i < numVolumes; i++) {
-      const volumeInput = volumeInputArray[i];
-
-      const imageVolume = await loadVolume(volumeInput.volumeId);
-
-      if (!imageVolume) {
-        throw new Error(
-          `imageVolume with id: ${imageVolume.volumeId} does not exist`
-        );
-      }
-
-      if (FrameOfReferenceUID !== imageVolume.metadata.FrameOfReferenceUID) {
-        throw new Error(
-          `Volumes being added to viewport ${this.id} do not share the same FrameOfReferenceUID. This is not yet supported`
-        );
-      }
-    }
-
     return true;
   }
 
